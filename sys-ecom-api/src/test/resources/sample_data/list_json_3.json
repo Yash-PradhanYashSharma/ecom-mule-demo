@@ -1,0 +1,68 @@
+[
+    {
+        "productStoreId": "PS-IND-A",
+        "quantity": 10,
+        "productId": "BASICTEE",
+        "orderId": 6,
+        "createdBy": "EXECUTIVE1",
+        "price": 250,
+        "productName": "Basic Tee",
+        "orderDate": "09/24/2019",
+        "userId": "Yashh"
+    },
+    {
+        "productStoreId": "PS-IND-A",
+        "quantity": 11,
+        "productId": "BASICTEEBLACK",
+        "orderId": 6,
+        "createdBy": "EXECUTIVE1",
+        "price": 260,
+        "productName": "Basic Tee Black",
+        "orderDate": "09/24/2019",
+        "userId": "Yashh"
+    },
+    {
+        "productStoreId": "PS-IND-A",
+        "quantity": 12,
+        "productId": "BASICTEEBLUE",
+        "orderId": 6,
+        "createdBy": "EXECUTIVE1",
+        "price": 290,
+        "productName": "Basic Tee Blue",
+        "orderDate": "09/24/2019",
+        "userId": "Yashh"
+    },
+    {
+        "productStoreId": "PS-IND-A",
+        "quantity": 13,
+        "productId": "BASICTEEGREEN",
+        "orderId": 6,
+        "createdBy": "EXECUTIVE1",
+        "price": 280,
+        "productName": "Basic Tee Green",
+        "orderDate": "09/24/2019",
+        "userId": "Yashh"
+    },
+    {
+        "productStoreId": "PS-IND-A",
+        "quantity": 14,
+        "productId": "BASICTEEORANGE",
+        "orderId": 6,
+        "createdBy": "EXECUTIVE1",
+        "price": 300,
+        "productName": "Basic Tee Orange",
+        "orderDate": "09/24/2019",
+        "userId": "Yashh"
+    },
+    {
+        "productStoreId": "PS-IND-A",
+        "quantity": 15,
+        "productId": "BASICTEEWHITE",
+        "orderId": 6,
+        "createdBy": "EXECUTIVE1",
+        "price": 270,
+        "productName": "Basic Tee White",
+        "orderDate": "09/24/2019",
+        "userId": "Yashh"
+    }
+]

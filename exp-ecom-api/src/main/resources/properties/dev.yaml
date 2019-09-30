@@ -1,0 +1,19 @@
+process:
+  http:
+    host: "localhost"
+    port: "8082"
+    basePath: "/v1/proc/api"
+    timeout: "1200000"
+  auth:
+    clientId: ""
+    clientSecret: ""
+    
+system:
+  http:
+    host: "localhost"
+    port: "8083"
+    basePath: "/v1/sys/api"
+    timeout: "60000"
+  auth:
+    clientId: ""
+    clientSecret: ""

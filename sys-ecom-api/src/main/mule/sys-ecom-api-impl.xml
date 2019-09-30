@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	
+	
+	<flow name="get-order-flow" doc:id="084a10b0-a3cc-44b7-a346-d983d1bb6fd9" >
+		<logger level="INFO" doc:name="Logger" doc:id="16f785a0-325b-4b23-9b2e-bdc3359bea81" />
+		<db:select doc:name="Select" doc:id="6e00cfba-a501-4f1f-bb69-e0d43d46de42" config-ref="MYSQL_Database_Config">
+			<db:sql >SELECT o.orderId, op.productId, op.quantity, p.price, p.productName, o.createdBy, o.orderDate, o.userId, o.productStoreId from e_com_mule_db.order o LEFT JOIN e_com_mule_db.orderproduct op ON o.orderId = op.orderId LEFT JOIN e_com_mule_db.product p ON op.productId = p.productId  WHERE o.orderId=:orderId;</db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="originalPayload var" doc:id="3a618f36-f845-4f54-a8f9-382f8e740977" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var ordeHeader= {
+	"orderId": payload[0].orderId,
+	"userId": payload[0].userId,
+	"orderDate": payload[0].orderDate,
+	"createdBy":payload[0].createdBy,
+	"productStoreId":payload[0].productStoreId
+}
+---
+{
+	(ordeHeader),
+	products: payload map ($ -- ordeHeader)
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="get-invoice-flow" doc:id="a603f8a7-1384-4a2f-9d5d-71b0f29bc352" >
+		<logger level="INFO" doc:name="Logger" doc:id="510c3941-8376-47c0-a0a5-3fd06d8a070f" />
+	</flow>
+	<flow name="create-cart-flow" doc:id="802219ae-afa6-42f0-b3e4-d7ecab3102ef" >
+		<ee:transform doc:name="product query" doc:id="95786efb-641b-4a6d-9c8a-aeed95c6d321" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="query" ><![CDATA[%dw 2.0
+output application/java
+var productId= (payload.products.*productId) joinBy "','" 
+---
+"select productId,quantity from product where productId in ('" ++ productId ++ "' )"]]></ee:set-variable>
+				<ee:set-variable variableName="originalPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:select doc:name="Select" doc:id="e5f2d0b1-e41b-4319-80a2-857ab6aba6e8" config-ref="MYSQL_Database_Config">
+			<db:sql >#[vars.query]</db:sql>
+		</db:select>
+		<ee:transform doc:name="product inventory check" doc:id="a5d1315a-f08d-4f0f-8dd7-d0d03f34cd11" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(payload map using (product= $) {
+	(vars.originalPayload.products filter (($.productId == product.productId) and $.quantity >= product.quantity) map  {
+		dd:$.productId,
+		qunatity:$.quantity
+	})
+}) filter $ != {}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="orderTableResponse" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="59ae99bf-b784-42e5-8389-8a3ff1097fbd" >
+			<when expression="#[sizeOf(payload) != 0]">
+				<logger level="INFO" doc:name="Logger" doc:id="4e9ca207-02b2-4dee-b186-10f69f00579b" />
+				<ee:transform doc:name="out of Stock products resp" doc:id="df217d9a-7db2-4b62-9613-b86f8cabe107" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status:"order Canceled",
+	Reason: "product is out of stock"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="order insert query" doc:id="e5891b33-b9aa-47ed-8574-c96de8f05442">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="query" ><![CDATA[%dw 2.0
+output application/java
+var payload01 = vars.originalPayload
+var data =  payload01.orderId as Number ++ ",'" ++ payload01.orderName ++ "','"  ++ payload01.orderDate ++ "','" ++ payload01.createdBy ++ "','" ++ payload01.productStoreId ++ "','" ++ payload01.userId
+---
+"INSERT INTO e_com_mule_db.order (orderId, orderName, orderDate, createdBy, productStoreId, userId) values (" ++ data ++ "');"]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<db:insert doc:name="Insert" doc:id="c2b3f44f-ac52-4255-b2a1-38eb974e6ef1" config-ref="MYSQL_Database_Config">
+					<db:sql >#[vars.query]</db:sql>
+				</db:insert>
+				<ee:transform doc:name="query for association table" doc:id="3884b4fc-260e-47ec-8622-011a92724635">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="query" ><![CDATA[%dw 2.0
+output application/json
+---
+(vars.orderTableResponse map using (product= $) {
+	(vars.originalPayload.products filter (($.productId == product.productId) and $.quantity <= product.quantity) map  {
+		orderId: vars.originalPayload.orderId,
+		productId:$.productId,
+		quantity:$.quantity
+	})
+}) filter $ != {}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<db:bulk-insert doc:name="Bulk insert" doc:id="d3b7103b-cb64-4a60-942e-70c487d60ca9" config-ref="MYSQL_Database_Config" >
+					<db:bulk-input-parameters ><![CDATA[#[vars.query]]]></db:bulk-input-parameters>
+					<db:sql >INSERT INTO e_com_mule_db.orderproduct (orderId, productId, quantity) values (:orderId,:productId , :quantity);</db:sql>
+				</db:bulk-insert>
+				<ee:transform doc:name="product table query" doc:id="b2dd5e4c-3d16-4127-8a1f-60823dd44b62">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="query" ><![CDATA[%dw 2.0
+output application/json
+---
+(vars.orderTableResponse map using (product= $) {
+	(vars.originalPayload.products filter (($.productId == product.productId) and $.quantity <= product.quantity) map  {
+		orderId: vars.originalPayload.orderId,
+		productId:$.productId,
+		quantity:(product.quantity - $.quantity)
+	})
+}) filter $ != {}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<db:bulk-update doc:name="Bulk update" doc:id="d914ec7c-1c8c-4707-a269-875cfe1d5c6e" config-ref="MYSQL_Database_Config">
+					<db:bulk-input-parameters ><![CDATA[#[vars.query]]]></db:bulk-input-parameters>
+					<db:sql >UPDATE e_com_mule_db.product SET quantity = :quantity  WHERE productId = :productId;</db:sql>
+				</db:bulk-update>
+				<ee:transform doc:name="order response" doc:id="b496a456-e3cd-47e7-bbe8-56072899021c">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status:"order has been placed succuccessfully",
+	orderId:vars.originalPayload.orderId 
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="fb8d7655-f409-4b43-9e5d-2d91cfc302ee" message="processing completed  #[payload]"/>
+	</flow>
+	<flow name="get-invoice-by-id-flow" doc:id="937c6095-a9b7-476f-a2de-8f13ddd69cb4" >
+		<logger level="INFO" doc:name="Logger" doc:id="7fbb0d3b-f0f2-463c-a534-d0ac95a36103" />
+		<set-variable value="#[attributes.uriParams.invoiceId]" doc:name="invoiceId" doc:id="34a400f6-a4b2-4b07-ab9f-6d10b1bd1e2b" variableName="invoiceId"/>
+		<http:request method="GET" doc:name="get invoice call to sap api" doc:id="3d037106-79eb-47c5-a354-c798c0cf9ef1" config-ref="SAP_API_HTTP_Configuration" path="${sap.path}/{invoiceId}">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	Authorization : p('sap.auth')
+}]]]></http:headers>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	invoiceId : "in_1FMFliGy6ElmQzXSNGFKp46A"
+}]]]></http:uri-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="b5a7e3c8-965a-4f3c-bb5f-93885456e075" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+({"id": vars.invoiceId }) ++ (payload - 'id')]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+
+	</mule>

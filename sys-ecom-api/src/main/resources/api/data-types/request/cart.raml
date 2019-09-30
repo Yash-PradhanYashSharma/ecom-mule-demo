@@ -1,0 +1,12 @@
+#%RAML 1.0 DataType
+description: create order request
+type: object
+properties:
+  userId: string
+  productStoreId: string
+  orderName:  string
+  createdBy:  string
+  orderDate:  string
+  products:
+    type: array
+    items: !include product-array.raml

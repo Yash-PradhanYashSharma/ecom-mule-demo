@@ -1,0 +1,61 @@
+#%RAML 1.0
+title: sys-ecomm-api
+description: System API or e-commerce
+version:  v1
+protocols: [HTTPS]
+
+traits:
+  Errorable:  !include common/traits/errorable.raml
+
+securitySchemes:
+  ClientIdAuth: !include common/security/client-id-auth.raml
+
+securedBy: [ClientIdAuth]
+
+/order:
+  post:
+    description: Order Detail for order id
+    is: [Errorable]
+    body:
+      application/json:
+        type: !include data-types/request/order.raml
+        example: !include examples/request/order.json
+    responses:
+      200:
+        body:
+          application/json:
+
+/cart:
+  post:
+    description: place order with item details
+    is: [Errorable]
+    body:
+      application/json:
+        type: !include data-types/request/cart.raml
+        example: !include examples/request/cart.json
+    responses:
+      200:
+      201:
+      202:
+        body:
+          application/json:
+/invoice:
+  post:
+    description: generate invoice 
+    is: [Errorable]
+    body:
+      application/xml:
+        type: !include data-types/request/invoice.xsd
+        example: !include examples/request/invoice.xml
+    responses:
+      200:
+        body:
+          application/json:
+  /{invoiceId}:
+    get:
+      description: get invoice using invoice id
+      is: [Errorable]
+      responses:
+        200:
+          body:
+            application/json:

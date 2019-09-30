@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	
+	<http:listener-config name="api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081">
+		</http:listener-connection>
+    </http:listener-config>
+    <apikit:config name="api-config" api="api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<configuration-properties doc:name="Configuration properties" doc:id="53ad25c8-c903-491e-af7a-fecb37c9b0a4" file="properties/${env}.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="499118d8-ef2f-4518-99e5-0c2778d93a5f" file="properties/common.yaml" />
+	<global-property doc:name="Global Property" doc:id="43862981-7e93-4c9b-a0fc-a65b3da417be" name="env" value="dev" />
+		<http:request-config name="ProcessHttp_Request_configuration" doc:name="HTTP Request configuration" doc:id="2e6d70f1-2e02-47ef-9c7a-7da646432873" basePath="${process.http.basePath}" >
+		<http:request-connection host="${process.http.host}" port="${process.http.port}" connectionIdleTimeout="${process.http.timeout}" />
+	</http:request-config>
+	<http:request-config name="SystemHttp_Request_configuration" doc:name="HTTP Request configuration" doc:id="3cad4161-e9c9-4f54-b378-b6ce4b339466" basePath="${system.http.basePath}" >
+		<http:request-connection host="${system.http.host}" port="${system.http.port}" connectionIdleTimeout="${system.http.timeout}" />
+	</http:request-config>
+	<api-gateway:autodiscovery apiId="15820980" doc:name="API Autodiscovery" doc:id="ac50173e-9b51-470c-8320-c246da034b4a" flowRef="api-main" />
+</mule>

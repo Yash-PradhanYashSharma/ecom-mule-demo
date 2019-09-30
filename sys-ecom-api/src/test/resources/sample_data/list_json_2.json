@@ -1,0 +1,26 @@
+[
+    {
+        "quantity": 100,
+        "productId": "BASICTEE"
+    },
+    {
+        "quantity": 100,
+        "productId": "BASICTEEBLACK"
+    },
+    {
+        "quantity": 100,
+        "productId": "BASICTEEBLUE"
+    },
+    {
+        "quantity": 100,
+        "productId": "BASICTEEGREEN"
+    },
+    {
+        "quantity": 100,
+        "productId": "BASICTEEORANGE"
+    },
+    {
+        "quantity": 100,
+        "productId": "BASICTEEWHITE"
+    }
+]

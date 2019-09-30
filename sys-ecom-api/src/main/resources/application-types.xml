@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="arrayy" format="json">
+      <types:shape format="weave" example="examples/sample.json"><![CDATA[%dw 2.0
+
+type arrayy = Array<{|  quantity: Number {"typeId": "int"},   productId: String|}> {"example": "[{\"quantity\":100,\"productId\":\"BASICTEE\"},{\"quantity\":100,\"productId\":\"BASICTEEBLACK\"},{\"quantity\":100,\"productId\":\"BASICTEEBLUE\"},{\"quantity\":100,\"productId\":\"BASICTEEGREEN\"},{\"quantity\":100,\"productId\":\"BASICTEEORANGE\"},{\"quantity\":100,\"productId\":\"BASICTEEWHITE\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="originalPayload" format="json">
+      <types:shape format="weave" example="examples/sample1.json"><![CDATA[%dw 2.0
+
+type originalPayload = {|
+  userId: String, 
+  productStoreId: String, 
+  orderName: String, 
+  createdBy: String, 
+  orderDate: String, 
+  products: Array<{|    productId: String,     quantity: Number {"typeId": "int"},     productName: String,     price: Number {"typeId": "int"}  |}>
+|} {"example": "{\"userId\":\"CUSTOMER1\",\"productStoreId\":\"PS-IND-A\",\"orderName\":\"PURCHASEORDER\",\"createdBy\":\"EXECUTIVE1\",\"orderDate\":\"'10\/20\/2019'\",\"products\":[{\"productId\":\"BASICTEE\",\"quantity\":10,\"productName\":\"er\",\"price\":10},{\"productId\":\"BASICTEEBLACK\",\"quantity\":11,\"productName\":\"er\",\"price\":10},{\"productId\":\"BASICTEEBLUE\",\"quantity\":12,\"productName\":\"er\",\"price\":10},{\"productId\":\"BASICTEEGREEN\",\"quantity\":13,\"productName\":\"er\",\"price\":10},{\"productId\":\"BASICTEEORANGE\",\"quantity\":14,\"productName\":\"er\",\"price\":10},{\"productId\":\"BASICTEEWHITE\",\"quantity\":15,\"productName\":\"er\",\"price\":10}]}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="sample2" format="json">
+      <types:shape format="weave" example="examples/sample2.json"><![CDATA[%dw 2.0
+
+type sample2 = Array<{|  productStoreId: String,   quantity: Number {"typeId": "int"},   productId: String,   orderId: Number {"typeId": "int"},   createdBy: String,   price: Number {"typeId": "int"},   productName: String,   orderDate: String,   userId: String|}> {"example": "[{\"productStoreId\":\"PS-IND-A\",\"quantity\":10,\"productId\":\"BASICTEE\",\"orderId\":6,\"createdBy\":\"EXECUTIVE1\",\"price\":250,\"productName\":\"Basic Tee\",\"orderDate\":\"09\/24\/2019\",\"userId\":\"Yashh\"},{\"productStoreId\":\"PS-IND-A\",\"quantity\":11,\"productId\":\"BASICTEEBLACK\",\"orderId\":6,\"createdBy\":\"EXECUTIVE1\",\"price\":260,\"productName\":\"Basic Tee Black\",\"orderDate\":\"09\/24\/2019\",\"userId\":\"Yashh\"},{\"productStoreId\":\"PS-IND-A\",\"quantity\":12,\"productId\":\"BASICTEEBLUE\",\"orderId\":6,\"createdBy\":\"EXECUTIVE1\",\"price\":290,\"productName\":\"Basic Tee Blue\",\"orderDate\":\"09\/24\/2019\",\"userId\":\"Yashh\"},{\"productStoreId\":\"PS-IND-A\",\"quantity\":13,\"productId\":\"BASICTEEGREEN\",\"orderId\":6,\"createdBy\":\"EXECUTIVE1\",\"price\":280,\"productName\":\"Basic Tee Green\",\"orderDate\":\"09\/24\/2019\",\"userId\":\"Yashh\"},{\"productStoreId\":\"PS-IND-A\",\"quantity\":14,\"productId\":\"BASICTEEORANGE\",\"orderId\":6,\"createdBy\":\"EXECUTIVE1\",\"price\":300,\"productName\":\"Basic Tee Orange\",\"orderDate\":\"09\/24\/2019\",\"userId\":\"Yashh\"},{\"productStoreId\":\"PS-IND-A\",\"quantity\":15,\"productId\":\"BASICTEEWHITE\",\"orderId\":6,\"createdBy\":\"EXECUTIVE1\",\"price\":270,\"productName\":\"Basic Tee White\",\"orderDate\":\"09\/24\/2019\",\"userId\":\"Yashh\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="sample4" format="json">
+      <types:shape format="weave" example="examples/sample4.json"><![CDATA[%dw 2.0
+
+type sample4 = {|
+  id: String, 
+  object: String, 
+  account_country: String, 
+  account_name: Null, 
+  amount_due: Number {"typeId": "int"}, 
+  amount_paid: Number {"typeId": "int"}, 
+  amount_remaining: Number {"typeId": "int"}, 
+  application_fee_amount: Null, 
+  attempt_count: Number {"typeId": "int"}, 
+  attempted: Boolean, 
+  auto_advance: Boolean, 
+  billing: String, 
+  billing_reason: String, 
+  charge: Null, 
+  collection_method: String, 
+  created: Number {"typeId": "int"}, 
+  currency: String, 
+  custom_fields: Null, 
+  customer: String, 
+  customer_address: {|
+    city: String, 
+    country: String, 
+    line1: String, 
+    line2: String, 
+    postal_code: String, 
+    state: String
+  |}, 
+  customer_email: String, 
+  customer_name: String, 
+  customer_phone: Null, 
+  customer_shipping: {|
+    address: {|
+      city: String, 
+      country: String, 
+      line1: String, 
+      line2: String, 
+      postal_code: String, 
+      state: String
+    |}, 
+    name: String, 
+    phone: String
+  |}, 
+  customer_tax_exempt: String, 
+  customer_tax_ids: Array<Any>, 
+  default_payment_method: Null, 
+  default_source: Null, 
+  default_tax_rates: Array<Any>, 
+  description: Null, 
+  discount: Null, 
+  due_date: Number {"typeId": "int"}, 
+  ending_balance: Number {"typeId": "int"}, 
+  footer: Null, 
+  hosted_invoice_url: String, 
+  invoice_pdf: String, 
+  lines: {|
+    object: String, 
+    data: Array<{|      id: String,       object: String,       amount: Number {"typeId": "int"},       currency: String,       description: String,       discountable: Boolean,       invoice_item: String,       livemode: Boolean,       metadata: {|  |},       period: {|        end: Number {"typeId": "int"},         start: Number {"typeId": "int"}      |},       plan: Null,       proration: Boolean,       quantity: Number {"typeId": "int"},       subscription: Null,       tax_amounts: Array<Any>, 
+      tax_rates: Array<Any>, 
+      "type": String
+    |}>, 
+    has_more: Boolean, 
+    total_count: Number {"typeId": "int"}, 
+    url: String
+  |}, 
+  livemode: Boolean, 
+  metadata: {|  |}, 
+  next_payment_attempt: Null, 
+  number: String, 
+  paid: Boolean, 
+  payment_intent: String, 
+  period_end: Number {"typeId": "int"}, 
+  period_start: Number {"typeId": "int"}, 
+  post_payment_credit_notes_amount: Number {"typeId": "int"}, 
+  pre_payment_credit_notes_amount: Number {"typeId": "int"}, 
+  receipt_number: Null, 
+  starting_balance: Number {"typeId": "int"}, 
+  statement_descriptor: Null, 
+  status: String, 
+  status_transitions: {|
+    finalized_at: Number {"typeId": "int"}, 
+    marked_uncollectible_at: Null, 
+    paid_at: Null, 
+    voided_at: Null
+  |}, 
+  subscription: Null, 
+  subtotal: Number {"typeId": "int"}, 
+  tax: Null, 
+  tax_percent: Null, 
+  total: Number {"typeId": "int"}, 
+  total_tax_amounts: Array<Any>, 
+  webhooks_delivered_at: Number {"typeId": "int"}
+|} {"example": "{\"id\":\"in_1FMFliGy6ElmQzXSNGFKp46A\",\"object\":\"invoice\",\"account_country\":\"US\",\"account_name\":null,\"amount_due\":97237200,\"amount_paid\":0,\"amount_remaining\":97237200,\"application_fee_amount\":null,\"attempt_count\":0,\"attempted\":false,\"auto_advance\":true,\"billing\":\"send_invoice\",\"billing_reason\":\"manual\",\"charge\":null,\"collection_method\":\"send_invoice\",\"created\":1569338254,\"currency\":\"usd\",\"custom_fields\":null,\"customer\":\"cus_FrzkjuZQrqNeNW\",\"customer_address\":{\"city\":\"indore\",\"country\":\"IN\",\"line1\":\"123\",\"line2\":\"\",\"postal_code\":\"452001\",\"state\":\"MP\"},\"customer_email\":\"john@gmail.com\",\"customer_name\":\"John Doe\",\"customer_phone\":null,\"customer_shipping\":{\"address\":{\"city\":\"indore\",\"country\":\"IN\",\"line1\":\"123\",\"line2\":\"\",\"postal_code\":\"452001\",\"state\":\"MP\"},\"name\":\"John Doe\",\"phone\":\"\"},\"customer_tax_exempt\":\"none\",\"customer_tax_ids\":[],\"default_payment_method\":null,\"default_source\":null,\"default_tax_rates\":[],\"description\":null,\"discount\":null,\"due_date\":1571930277,\"ending_balance\":0,\"footer\":null,\"hosted_invoice_url\":\"https:\/\/pay.stripe.com\/invoice\/invst_8P77BFgfapIQqMm7hAun78zd0c\",\"invoice_pdf\":\"https:\/\/pay.stripe.com\/invoice\/invst_8P77BFgfapIQqMm7hAun78zd0c\/pdf\",\"lines\":{\"object\":\"list\",\"data\":[{\"id\":\"ii_1FMFliGy6ElmQzXSDr7KOdJP\",\"object\":\"line_item\",\"amount\":97237200,\"currency\":\"usd\",\"description\":\"YAsh TEst \",\"discountable\":true,\"invoice_item\":\"ii_1FMFliGy6ElmQzXSDr7KOdJP\",\"livemode\":false,\"metadata\":{},\"period\":{\"end\":1569338254,\"start\":1569338254},\"plan\":null,\"proration\":false,\"quantity\":3,\"subscription\":null,\"tax_amounts\":[],\"tax_rates\":[],\"type\":\"invoiceitem\"}],\"has_more\":false,\"total_count\":1,\"url\":\"\/v1\/invoices\/in_1FMFliGy6ElmQzXSNGFKp46A\/lines\"},\"livemode\":false,\"metadata\":{},\"next_payment_attempt\":null,\"number\":\"YASH-0001\",\"paid\":false,\"payment_intent\":\"pi_1FMFm5Gy6ElmQzXSNXMYCvEE\",\"period_end\":1569338254,\"period_start\":1569338254,\"post_payment_credit_notes_amount\":0,\"pre_payment_credit_notes_amount\":0,\"receipt_number\":null,\"starting_balance\":0,\"statement_descriptor\":null,\"status\":\"open\",\"status_transitions\":{\"finalized_at\":1569338277,\"marked_uncollectible_at\":null,\"paid_at\":null,\"voided_at\":null},\"subscription\":null,\"subtotal\":97237200,\"tax\":null,\"tax_percent\":null,\"total\":97237200,\"total_tax_amounts\":[],\"webhooks_delivered_at\":1569338254}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#a5d1315a-f08d-4f0f-8dd7-d0d03f34cd11">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="arrayy"/>
+        </types:message>
+        <types:variables>
+          <types:variable name="originalPayload" type="originalPayload"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#e5891b33-b9aa-47ed-8574-c96de8f05442"/>
+  <types:enrichment select="#3884b4fc-260e-47ec-8622-011a92724635">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="originalPayload" type="originalPayload"/>
+          <types:variable name="orderTableResponse" type="arrayy"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#3a618f36-f845-4f54-a8f9-382f8e740977">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sample2"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#b5a7e3c8-965a-4f3c-bb5f-93885456e075">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sample4"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#1d5b86d1-d747-414c-8896-3abda4152e98"/>
+</types:mule>
