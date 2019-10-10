@@ -20,23 +20,14 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
+	"type" : attributes.queryParams.'type',
 	resourceName : attributes.maskedRequestPath
 }]]]></http:query-params>
 			<http:response-validator >
 				<http:success-status-code-validator values="200" />
 			</http:response-validator>
 		</http:request>
-		<ee:transform doc:name="Transform Message" doc:id="3588c214-6f27-427d-b36b-bd293d0a3d4b" >
-			<ee:message >
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="httpStatus" ><![CDATA[%dw 2.0
-output application/java
----
-if(payload.status == "failed") 500 else 200]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<logger level="INFO" doc:name="Info Logger: processing completed " doc:id="1b1caab9-8f9d-4980-8cd9-c9583f718e41" message="exp layer: processed order for order id #[payload.orderId]"/>
+		<logger level="INFO" doc:name="Info Logger: processing completed " doc:id="1b1caab9-8f9d-4980-8cd9-c9583f718e41" message="exp layer: processed order for order id"/>
 	</flow>
 	<flow name="get-invoice-by-invoiceid-flow" doc:id="5796b82a-181c-4bfe-a4a3-60782b6ca7d4" >
 		<logger level="INFO" doc:name="Logger" doc:id="0ed9b870-9bb1-44d7-8f73-cbbae52578ed" />
@@ -53,6 +44,11 @@ if(payload.status == "failed") 500 else 200]]></ee:set-variable>
 {
 	invoiceId : attributes.uriParams.invoiceId
 }]]]></http:uri-params>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+		"type" : attributes.queryParams.'type'
+}]]]></http:query-params>
 		
 </http:request>
 	</flow>

@@ -54,6 +54,7 @@ output application/json
 		<flow-ref doc:name="router-flow" doc:id="a41416bf-0af7-4899-8078-766ecb65f138" name="router-flow"/>
     </flow>
     <flow name="get:\invoice\(invoiceId):api-config">
+		<logger level="INFO" doc:name="Logger" doc:id="0575e6e9-efb2-4eec-85ab-4fecf6c5ddfd" message="#[attributes.queryParams.'type']"/>
 		<flow-ref doc:name="get-invoice-by-invoiceid-flow" doc:id="ef93cd07-e71d-46d3-be7a-ce7465644f50" name="get-invoice-by-invoiceid-flow"/>
     </flow>
     <flow name="post:\order:application\json:api-config">

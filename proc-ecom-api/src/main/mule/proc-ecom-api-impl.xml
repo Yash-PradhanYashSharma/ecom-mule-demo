@@ -29,6 +29,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	"client_secret": p('process.auth.clientSecret'),
 	 "Content-Type" : "application/json"
 }]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"type" : attributes.queryParams.'type'
+}]]]></http:query-params>
 			<http:response-validator >
 				<http:success-status-code-validator values="0..599" />
 			</http:response-validator>
