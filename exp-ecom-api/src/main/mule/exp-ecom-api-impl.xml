@@ -30,7 +30,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Info Logger: processing completed " doc:id="1b1caab9-8f9d-4980-8cd9-c9583f718e41" message="exp layer: processed order for order id"/>
 	</flow>
 	<flow name="get-invoice-by-invoiceid-flow" doc:id="5796b82a-181c-4bfe-a4a3-60782b6ca7d4" >
-		<logger level="INFO" doc:name="Logger" doc:id="0ed9b870-9bb1-44d7-8f73-cbbae52578ed" />
+		<logger level="INFO" doc:name="INFO Logger- Getting invoice details for Invoice Id" doc:id="0ed9b870-9bb1-44d7-8f73-cbbae52578ed" message="Getting invoice details for Invoice Id"/>
 		<http:request method="GET" doc:name="system:getInvoiceById" doc:id="b523c824-a3fb-47b6-94d5-8cecef97d3d3" config-ref="SystemHttp_Request_configuration" path="/invoice/{invoiceId}">
 			<http:headers ><![CDATA[#[output application/java
 ---

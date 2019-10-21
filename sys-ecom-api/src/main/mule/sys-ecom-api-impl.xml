@@ -56,7 +56,6 @@ stringObj]]></ee:set-payload>
         content: payload
       }]]]></java:args>
 		</java:invoke>
-		<logger level="INFO" doc:name="Logger" doc:id="19c94ad3-32cd-49cf-969c-c2a327f8710e" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="db5f0167-6df1-41a3-9c88-f20546801bf2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -94,12 +93,29 @@ var ordeHeader= {
 			<ee:variables >
 			</ee:variables>
 		</ee:transform>
-		<choice doc:name="Choice" doc:id="fe3a8150-8466-43ac-9837-0aae728a4504" >
+		<choice doc:name="Choice" doc:id="bb8a6046-d2d6-4b43-96b8-b36c20956591" >
+			<when expression="#[(sizeOf(payload))&gt;0]">
+				<choice doc:name="Choice" doc:id="fe3a8150-8466-43ac-9837-0aae728a4504">
 			<when expression="#[vars.'type' != null and vars.'type' == &quot;pdf&quot;]">
-				<flow-ref doc:name="orderJsonToPDF" doc:id="01138c36-9bc0-4727-b6c0-38196aaef186" name="orderJsonToPDF"/>
+				<flow-ref doc:name="orderJsonToPDF" doc:id="01138c36-9bc0-4727-b6c0-38196aaef186" name="orderJsonToPDF" />
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="ef2dd76a-d5c9-4969-b537-13227a431eb7" message="Processed!" />
+			</otherwise>
+		</choice>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="ef2dd76a-d5c9-4969-b537-13227a431eb7" message="Processed!"/>
+				<ee:transform doc:name="Transform Message" doc:id="cd8a36b9-c6ab-4bb4-b463-54aeec1270ce" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    orderId: vars.orderId,
+    status: "Order Not Found"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</otherwise>
 		</choice>
 	</flow>
@@ -221,7 +237,7 @@ output application/json
 output application/json
 ---
 {
-	status:"order has been placed succuccessfully",
+	status:"Order has been placed successfully",
 	orderId:vars.originalPayload.orderId 
 }]]></ee:set-payload>
 					</ee:message>

@@ -18,8 +18,10 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 
 public class OrderJsonToPDF {
+
 
 	public byte[] jsontopdf(String filename, String content) throws IOException {
 
@@ -29,6 +31,7 @@ public class OrderJsonToPDF {
 		try
 
 		{
+			int totalPrice=0;
 			JSONObject jsonObject = new JSONObject(content);
 
 			PdfPTable table = new PdfPTable(3);
@@ -38,9 +41,11 @@ public class OrderJsonToPDF {
 			float[] columnWidths = { 4f, 4f, 4f };
 			table.setWidths(columnWidths);
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-			table.addCell("ProductName");
 			table.addCell("Quantity");
 			table.addCell("Price");
+			table.addCell("ProductName");
+			
+			
 
 			table.setHeaderRows(1);
 			PdfPCell[] cells = table.getRow(0).getCells();
@@ -57,7 +62,7 @@ public class OrderJsonToPDF {
 					String key = keys.next();
 					System.out.print(key.contains("productName"));
 					if (key.contains("productName")) {
-						System.out.print(key);
+					
 						table.addCell((String) json.get("productName"));
 					}
 					if (key.contains("quantity")) {
@@ -65,24 +70,32 @@ public class OrderJsonToPDF {
 					}
 					if (key.contains("price")) {
 						table.addCell(String.valueOf(json.get("price")));
+					
+						totalPrice=totalPrice + ((Integer) json.get("price"));
 					}
 				}
 
 			}
-
+			System.out.print("totalPrice"+totalPrice);
 			PdfWriter.getInstance(document, out);
 
 			Font f = new Font(FontFamily.TIMES_ROMAN, 20.0f, Font.NORMAL, BaseColor.DARK_GRAY);
 			Paragraph p = new Paragraph("Thank you for your order! ", f);
 
 			p.setAlignment(Paragraph.ALIGN_LEFT);
+			Font f2 = new Font(FontFamily.TIMES_ROMAN, 30.0f, Font.UNDERLINE, BaseColor.DARK_GRAY);
+			Paragraph p4 = new Paragraph("Order Details", f2);
+			p4.setAlignment(Paragraph.ALIGN_CENTER);
 
 			document.open();
+			document.add(p4);
+			document.add(new Paragraph("\n\n"));
 			document.add(p);
-			document.add(new Paragraph("\n\n\n"));
-
+			document.add(new Paragraph("\n"));
+			document.add(new Paragraph("Customer Name: " + ((String) jsonObject.get("userId"))));
+			document.add(new Paragraph("\n\n"));
 			document.add(new Paragraph("Dear " + ((String) jsonObject.get("userId"))
-					+ ",\nThank you for your order from Yash Website Store.Once your package ships we will send you tracking number.\n\nIf you have any queries about your order, you can email us at yashtech@gmail.com."));
+					+ ",\nThank you for your order from Yash Website Store. Once your package ships we will send you tracking number.\n\nIf you have any queries about your order, you can email us at yashtech@gmail.com."));
 
 			document.add(new Paragraph("\n\n"));
 
@@ -91,6 +104,12 @@ public class OrderJsonToPDF {
 
 			document.add(table);
 			document.add(new Paragraph("\n"));
+			Font f3 = new Font(FontFamily.TIMES_ROMAN, 14.0f, Font.UNDEFINED, BaseColor.BLACK);
+			Paragraph p3 = new Paragraph("Total Amount: $" + String.valueOf(totalPrice), f3);
+			p3.setAlignment(Paragraph.ALIGN_RIGHT);
+			document.add(p3);
+			document.add(new LineSeparator(0.5f, 100, null, 0, -5));
+			
 			document.add(new Paragraph(
 					"Thanks for your purchase! \nFor any futher questions do not hesitate to contact us!"));
 
@@ -107,5 +126,4 @@ public class OrderJsonToPDF {
 		return out.toByteArray();
 
 	}
-
 }

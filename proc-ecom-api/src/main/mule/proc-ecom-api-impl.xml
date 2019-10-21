@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="router-flow" doc:id="39fc8250-10ae-443e-b8b0-1b5467a5b96d" >
-		<set-variable value="#[attributes.queryParams.'resourceName']" doc:name="Set Variable" doc:id="d786910e-5201-4fc9-985f-59a2364f0235" variableName="resourceName"/>
+		<set-variable value="#[attributes.queryParams.'resourceName']" doc:name="resourceName" doc:id="d786910e-5201-4fc9-985f-59a2364f0235" variableName="resourceName"/>
 		<choice doc:name="choice to identify the endpoint" doc:id="9deb500c-65fc-4193-bef4-d56a0173bf85" >
 			<when expression='#[vars.resourceName == "/order"]'>
 				<flow-ref doc:name="get-order-flow" doc:id="03fd4546-8aae-466f-bd41-3d865e797bc4" name="get-order-flow"/>
@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		</choice>
 	</flow>
 	<sub-flow name="get-order-flow" doc:id="0487a5a1-88dc-45cb-8f4f-2bc98ad477da" >
-		<logger level="INFO" doc:name="Logger" doc:id="5a6a9940-49ed-4281-b109-f389a879d61e" />
+		<logger level="INFO" doc:name="INFO Logger - Received orderId to fech order details" doc:id="5a6a9940-49ed-4281-b109-f389a879d61e" message="Received orderId to fech order details"/>
 		<http:request method="POST" doc:name="system:getOrder" doc:id="c59d92c1-0126-46d8-8517-dd0699c89055" config-ref="SystemHttp_Request_configuration" path="/order">
 			<http:headers ><![CDATA[#[output application/java
 ---
@@ -40,12 +40,12 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		</http:request>
 	</sub-flow>
 	<sub-flow name="create-cart-flow" doc:id="80684711-fe51-428d-93ac-c54df2f3213a" >
-		<logger level="INFO" doc:name="Logger" doc:id="a1db4345-62d3-4cfe-85fe-10b15dbd88db" />
+		<logger level="INFO" doc:name="INFO Logger-Creating Cart" doc:id="a1db4345-62d3-4cfe-85fe-10b15dbd88db" message="Creating Cart"/>
 		<ee:transform doc:name="generating orderId" doc:id="61945c54-64f9-4d48-8cb4-433867166500" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
-var orderId= randomInt(100)
+var orderId = 10000 + randomInt(40000)
 var n = orderId as Number
 ---
 {orderId:orderId } ++ payload]]></ee:set-payload>
@@ -64,9 +64,9 @@ var n = orderId as Number
 			</http:response-validator>
 		
 </http:request>
+		<logger level="INFO" doc:name="INFO Logger - Cart Has Created" doc:id="342026fd-b2ee-4261-9af5-646e7f656605" message="Cart Has Created"/>
 	</sub-flow>
 	<sub-flow name="get-invoice-flow" doc:id="bd56ddba-40b0-489a-9c3a-0d4caf2d7ae0" >
-		<logger level="INFO" doc:name="Logger" doc:id="63d2ab26-9efb-4db5-8bee-5eb3d5d80ecd" />
 		<ee:transform doc:name="jsontoxml" doc:id="2bb7e415-a4a2-4d2a-9f1f-3233397d5787" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
